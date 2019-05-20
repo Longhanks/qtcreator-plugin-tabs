@@ -9,8 +9,8 @@
 
 namespace Tabs::Internal {
 
-bool TabsPlugin::initialize(const QStringList &arguments,
-                            QString *errorString) {
+bool TabsPlugin::initialize([[maybe_unused]] const QStringList &arguments,
+                            [[maybe_unused]] QString *errorString) {
     QMainWindow *mainWindow = Core::ICore::mainWindow();
     mainWindow->layout()->setSpacing(0);
 
