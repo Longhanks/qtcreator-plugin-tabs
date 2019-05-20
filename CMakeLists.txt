@@ -72,8 +72,14 @@ if (APPLE)
         "-compatibility_version ${QTCREATOR_VERSION}"
     )
 else ()
+    find_library(CORE_LIB NAMES Core PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
+    find_library(EXTENSIONSYSTEM_LIB NAMES ExtensionSystem PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator")
+    find_library(PROJECTEXPLORER_LIB NAMES ProjectExplorer PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
+    find_library(UTILS_LIB NAMES Utils PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator")
     set(QTWIDGETS_LIB "${Qt5Widgets_LIBRARIES}")
-    # TODO linux
+    set(QTGUI_LIB "${Qt5Gui_LIBRARIES}")
+    set(QTCORE_LIB "${Qt5Core_LIBRARIES}")
+    set_target_properties(tabs PROPERTIES INSTALL_RPATH_USE_LINK_PATH ON)
 endif ()
 
 target_link_libraries(tabs PRIVATE
@@ -90,4 +96,6 @@ target_link_libraries(tabs PRIVATE
 if (APPLE)
     install(TARGETS tabs DESTINATION "${QTCREATOR_BIN_DIR}/../PlugIns")
     install(CODE "execute_process(COMMAND \"sudo xattr -rd com.apple.quarantine ${QTCREATOR_BIN_DIR}/../../\")")
+else ()
+    install(TARGETS tabs DESTINATION "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
 endif ()
