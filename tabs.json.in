@@ -1,0 +1,16 @@
+{
+    "Name" : "tabs",
+    "Version" : "${tabs_VERSION_MAJOR}.${tabs_VERSION_MINOR}.${tabs_VERSION_PATCH}",
+    "CompatVersion" : "${tabs_VERSION_MAJOR}.${tabs_VERSION_MINOR}.${tabs_VERSION_PATCH}",
+    "Vendor" : "Andreas Schulz",
+    "Copyright" : "(C) 2019 Andreas Schulz",
+    "License" : "MIT",
+    "Category" : "Qt Creator",
+    "Description" : "Add tabs to Qt Creator.",
+    "Url" : "https://github.com/Longhanks/qtcreator-plugin-tabs",
+    "Dependencies" : [
+        { "Name" : "Core", "Version" : "${QTCREATOR_VERSION}" },
+        { "Name" : "ProjectExplorer", "Version" : "${QTCREATOR_VERSION}" },
+        { "Name" : "TextEditor", "Version" : "${QTCREATOR_VERSION}" }
+    ]
+}
