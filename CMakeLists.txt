@@ -49,6 +49,23 @@ configure_file("${CMAKE_SOURCE_DIR}/tabs.json.in" "${CMAKE_CURRENT_BINARY_DIR}/t
 
 add_library(tabs SHARED plugin.cpp tabbar.cpp)
 
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
+    list(APPEND COMPILER_WARNINGS
+        "-Weverything"
+        "-Wno-c++98-compat"
+        "-Wno-c++98-compat-pedantic"
+        )
+else ()
+    message(STATUS "ToDo GCC/MSVC flags...")
+endif ()
+string(REPLACE ";" " " COMPILER_WARNINGS_STR "${COMPILER_WARNINGS}")
+
+get_target_property(tabs_SOURCES tabs SOURCES)
+
+foreach (tabs_SOURCE ${tabs_SOURCES})
+    set_source_files_properties(${tabs_SOURCE} PROPERTIES COMPILE_FLAGS "${COMPILER_WARNINGS_STR}")
+endforeach ()
+
 set_target_properties(tabs PROPERTIES AUTOMOC ON)
 
 target_include_directories(tabs SYSTEM PRIVATE
