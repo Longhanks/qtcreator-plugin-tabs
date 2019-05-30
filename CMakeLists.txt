@@ -51,7 +51,7 @@ add_library(tabs SHARED plugin.cpp tabbar.cpp)
 
 set_target_properties(tabs PROPERTIES AUTOMOC ON)
 
-target_include_directories(tabs PRIVATE
+target_include_directories(tabs SYSTEM PRIVATE
     "${CMAKE_CURRENT_BINARY_DIR}"
     "${Qt5Widgets_INCLUDE_DIRS}"
     "${QTCREATOR_SRC}/src/libs"
@@ -64,12 +64,13 @@ if (APPLE)
     find_library(PROJECTEXPLORER_LIB NAMES ProjectExplorer PATHS "${QTCREATOR_BIN_DIR}/../PlugIns")
     find_library(TEXTEDITOR_LIB NAMES TextEditor PATHS "${QTCREATOR_BIN_DIR}/../PlugIns")
     find_library(UTILS_LIB NAMES Utils PATHS "${QTCREATOR_BIN_DIR}/../Frameworks")
-    find_library(QTWIDGETS_LIB NAMES QtWidgets PATHS "${QTCREATOR_BIN_DIR}/../Frameworks" NO_DEFAULT_PATH)
-    find_library(QTGUI_LIB NAMES QtGui PATHS "${QTCREATOR_BIN_DIR}/../Frameworks" NO_DEFAULT_PATH)
-    find_library(QTCORE_LIB NAMES QtCore PATHS "${QTCREATOR_BIN_DIR}/../Frameworks" NO_DEFAULT_PATH)
+    set(QTWIDGETS_LIB "-framework QtWidgets")
+    set(QTGUI_LIB "-framework QtGui")
+    set(QTCORE_LIB "-framework QtCore")
     target_link_options(tabs PRIVATE
-        "-Wl,-install_name,@rpath/PlugIns/"
-        "-compatibility_version ${QTCREATOR_VERSION}"
+        -Wl,-install_name,@rpath/PlugIns/
+        -compatibility_version "${QTCREATOR_VERSION}"
+        -iframework "${QTCREATOR_BIN_DIR}/../Frameworks"
     )
 else ()
     find_library(CORE_LIB NAMES Core PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
