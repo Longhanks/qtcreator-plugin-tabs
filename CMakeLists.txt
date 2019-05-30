@@ -49,14 +49,53 @@ configure_file("${CMAKE_SOURCE_DIR}/tabs.json.in" "${CMAKE_CURRENT_BINARY_DIR}/t
 
 add_library(tabs SHARED plugin.cpp tabbar.cpp)
 
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" AND NOT MSVC)
     list(APPEND COMPILER_WARNINGS
         "-Weverything"
         "-Wno-c++98-compat"
         "-Wno-c++98-compat-pedantic"
         )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    list(APPEND COMPILER_WARNINGS
+        "-Wall"
+        "-Wcast-align"
+        "-Wcast-qual"
+        "-Wconversion"
+        "-Wctor-dtor-privacy"
+        "-Wdisabled-optimization"
+        "-Wdouble-promotion"
+        "-Wduplicated-branches"
+        "-Wduplicated-cond"
+        "-Wextra"
+        "-Wformat=2"
+        "-Winvalid-pch"
+        "-Wlogical-op"
+        "-Wmisleading-indentation"
+        "-Wmissing-include-dirs"
+        "-Wnoexcept"
+        "-Wnon-virtual-dtor"
+        "-Wnull-dereference"
+        "-Wold-style-cast"
+        "-Woverloaded-virtual"
+        "-Woverloaded-virtual"
+        "-Wpedantic"
+        "-Wpointer-arith"
+        "-Wredundant-decls"
+        "-Wshadow"
+        "-Wshift-overflow=2"
+        "-Wsign-conversion"
+        "-Wsized-deallocation"
+        "-Wtrampolines"
+        "-Wundef"
+        "-Wunused"
+        "-Wuseless-cast"
+        "-Wvector-operation-performance"
+        "-Wwrite-strings"
+        "-Wzero-as-null-pointer-constant"
+        "-pedantic-errors"
+        )
 else ()
-    message(STATUS "ToDo GCC/MSVC flags...")
+    message(STATUS "ToDo MSVC warnings...")
 endif ()
 string(REPLACE ";" " " COMPILER_WARNINGS_STR "${COMPILER_WARNINGS}")
 
