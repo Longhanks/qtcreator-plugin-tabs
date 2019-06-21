@@ -11,6 +11,7 @@
     "Dependencies" : [
         { "Name" : "Core", "Version" : "${QTCREATOR_VERSION}" },
         { "Name" : "ProjectExplorer", "Version" : "${QTCREATOR_VERSION}" },
-        { "Name" : "TextEditor", "Version" : "${QTCREATOR_VERSION}" }
+        { "Name" : "TextEditor", "Version" : "${QTCREATOR_VERSION}" },
+        { "Name" : "layoutsupport", "Version" : "0.1.0" }
     ]
 }

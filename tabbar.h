@@ -2,8 +2,6 @@
 
 #include <QTabBar>
 
-class QShortcut;
-
 namespace Core {
 
 class IEditor;
@@ -36,7 +34,6 @@ protected:
 
 private:
     QList<Core::IEditor *> m_editors;
-    QList<QShortcut *> m_shortcuts;
 };
 
 } // namespace Tabs::Internal
