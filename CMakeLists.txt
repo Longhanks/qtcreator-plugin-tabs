@@ -49,7 +49,7 @@ project(tabs LANGUAGES CXX VERSION 0.6.0)
 
 configure_file("${CMAKE_SOURCE_DIR}/tabs.json.in" "${CMAKE_CURRENT_BINARY_DIR}/tabs.json")
 
-add_library(tabs SHARED plugin.cpp tabbar.cpp)
+add_library(${PROJECT_NAME} SHARED plugin.cpp tabbar.cpp)
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" AND NOT MSVC)
     list(APPEND COMPILER_WARNINGS
@@ -107,15 +107,15 @@ else ()
 endif ()
 string(REPLACE ";" " " COMPILER_WARNINGS_STR "${COMPILER_WARNINGS}")
 
-get_target_property(tabs_SOURCES tabs SOURCES)
+get_target_property(${PROJECT_NAME}_SOURCES ${PROJECT_NAME} SOURCES)
 
-foreach (tabs_SOURCE ${tabs_SOURCES})
-    set_source_files_properties(${tabs_SOURCE} PROPERTIES COMPILE_FLAGS "${COMPILER_WARNINGS_STR}")
+foreach (${PROJECT_NAME}_SOURCE ${${PROJECT_NAME}_SOURCES})
+    set_source_files_properties(${${PROJECT_NAME}_SOURCE} PROPERTIES COMPILE_FLAGS "${COMPILER_WARNINGS_STR}")
 endforeach ()
 
-set_target_properties(tabs PROPERTIES AUTOMOC ON)
+set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC ON)
 
-target_include_directories(tabs SYSTEM PRIVATE
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
     "${CMAKE_CURRENT_BINARY_DIR}"
     "${Qt5Widgets_INCLUDE_DIRS}"
     "${QTCREATOR_SRC}/src/libs"
@@ -131,7 +131,7 @@ if (APPLE)
     set(QTWIDGETS_LIB "-framework QtWidgets")
     set(QTGUI_LIB "-framework QtGui")
     set(QTCORE_LIB "-framework QtCore")
-    target_link_options(tabs PRIVATE
+    target_link_options(${PROJECT_NAME} PRIVATE
         -Wl,-install_name,@rpath/PlugIns/
         -compatibility_version "${QTCREATOR_VERSION}"
         -iframework "${QTCREATOR_BIN_DIR}/../Frameworks"
@@ -142,10 +142,10 @@ elseif (UNIX)
     find_library(PROJECTEXPLORER_LIB NAMES ProjectExplorer PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
     find_library(TEXTEDITOR_LIB NAMES TextEditor PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
     find_library(UTILS_LIB NAMES Utils PATHS "${QTCREATOR_BIN_DIR}/../lib/qtcreator")
-    set(QTWIDGETS_LIB "${Qt5Widgets_LIBRARIES}")
-    set(QTGUI_LIB "${Qt5Gui_LIBRARIES}")
-    set(QTCORE_LIB "${Qt5Core_LIBRARIES}")
-    set_target_properties(tabs PROPERTIES INSTALL_RPATH_USE_LINK_PATH ON)
+    set(QTWIDGETS_LIB "${QTCREATOR_BIN_DIR}/../lib/Qt/lib/libQt5Widgets.so.5")
+    set(QTGUI_LIB "${QTCREATOR_BIN_DIR}/../lib/Qt/lib/libQt5Gui.so.5")
+    set(QTCORE_LIB "${QTCREATOR_BIN_DIR}/../lib/Qt/lib/libQt5Core.so.5")
+    set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH ON)
 else ()
     find_library(CORE_LIB NAMES Core4 PATHS "${CMAKE_SOURCE_DIR}/lib/qtcreator/plugins")
     find_library(EXTENSIONSYSTEM_LIB NAMES ExtensionSystem4 PATHS "${CMAKE_SOURCE_DIR}/lib/qtcreator")
@@ -157,7 +157,7 @@ else ()
     set(QTCORE_LIB "${Qt5Core_LIBRARIES}")
 endif ()
 
-target_link_libraries(tabs PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     "${CORE_LIB}"
     "${EXTENSIONSYSTEM_LIB}"
     "${PROJECTEXPLORER_LIB}"
@@ -169,10 +169,10 @@ target_link_libraries(tabs PRIVATE
 )
 
 if (APPLE)
-    install(TARGETS tabs DESTINATION "${QTCREATOR_BIN_DIR}/../PlugIns")
+    install(TARGETS ${PROJECT_NAME} DESTINATION "${QTCREATOR_BIN_DIR}/../PlugIns")
     install(CODE "execute_process(COMMAND \"sudo xattr -rd com.apple.quarantine ${QTCREATOR_BIN_DIR}/../../\")")
 elseif (UNIX)
-    install(TARGETS tabs DESTINATION "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
+    install(TARGETS ${PROJECT_NAME} DESTINATION "${QTCREATOR_BIN_DIR}/../lib/qtcreator/plugins")
 else ()
     file(TO_CMAKE_PATH $ENV{LOCALAPPDATA} LOCALAPPDATA_PATH)
     if ("${LOCALAPPDATA_PATH}" STREQUAL "")
@@ -182,5 +182,5 @@ else ()
     if (NOT IS_DIRECTORY "${PLUGINDIR_PATH}")
         file(MAKE_DIRECTORY "${PLUGINDIR_PATH}")
     endif ()
-    install(TARGETS tabs RUNTIME DESTINATION "${PLUGINDIR_PATH}")
+    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION "${PLUGINDIR_PATH}")
 endif ()
