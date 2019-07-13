@@ -31,6 +31,7 @@ private slots:
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    QSize tabSizeHint(int index) const override;
 
 private:
     QList<Core::IEditor *> m_editors;

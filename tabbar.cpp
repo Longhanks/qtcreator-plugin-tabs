@@ -189,4 +189,15 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event) {
     QTabBar::mouseReleaseEvent(event);
 }
 
+QSize TabBar::tabSizeHint(int index) const {
+    auto retVal = QTabBar::tabSizeHint(index);
+    if (retVal.width() < 200) {
+        retVal.setWidth(200);
+    }
+    if (retVal.height() < 32) {
+        retVal.setHeight(32);
+    }
+    return retVal;
+}
+
 } // namespace Tabs::Internal
