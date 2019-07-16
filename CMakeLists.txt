@@ -80,7 +80,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         "-Wnull-dereference"
         "-Wold-style-cast"
         "-Woverloaded-virtual"
-        "-Woverloaded-virtual"
         "-Wpedantic"
         "-Wpointer-arith"
         "-Wredundant-decls"
