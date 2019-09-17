@@ -1,8 +1,10 @@
 #pragma once
 
-namespace Tabs::Constants {
+namespace Tabs::Internal::Constants {
 
-const char PREV_TAB_ID[] = "TabsPlugin.PrevTab";
-const char NEXT_TAB_ID[] = "TabsPlugin.NextTab";
+constexpr const char PREV_TAB_ID[] = "TabsPlugin.PrevTab";
+constexpr const char NEXT_TAB_ID[] = "TabsPlugin.NextTab";
+constexpr const int TAB_MIN_HEIGHT = 32;
+constexpr const int TAB_MIN_WIDTH = 200;
 
-} // namespace Tabs::Constants
+} // namespace Tabs::Internal::Constants

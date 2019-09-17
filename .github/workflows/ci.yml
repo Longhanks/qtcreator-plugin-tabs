@@ -1,0 +1,122 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install LLVM 8
+      run: |
+        sudo apt install build-essential
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        sudo sh -c 'echo "deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list'
+        sudo sh -c 'echo "deb-src https://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list'
+        sudo apt update
+        sudo apt install -y clang-8
+    - name: Install cmake
+      run: |
+        sudo mkdir -p /opt/cmake
+        wget https://github.com/Kitware/CMake/releases/download/v3.15.3/cmake-3.15.3-Linux-x86_64.sh -O cmake.sh
+        chmod +x cmake.sh
+        sudo ./cmake.sh --prefix=/opt/cmake --skip-license
+        rm cmake.sh
+    - name: Install ninja
+      run: |
+        wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip
+        unzip ninja-linux.zip
+        sudo mv ninja /usr/bin/ninja
+        rm ninja-linux.zip
+    - name: Install Qt
+      run: |
+        sudo wget -nv https://github.com/benlau/qtci/raw/master/recipes/install-qt -O /usr/bin/install-qt
+        sudo chmod +x /usr/bin/install-qt
+        sudo wget -nv https://github.com/benlau/qtci/raw/master/bin/extract-qt-installer -O /usr/bin/extract-qt-installer
+        sudo chmod +x /usr/bin/extract-qt-installer
+        export QT_CI_PACKAGES=qt.qt5.5131.gcc_64
+        export QT_CI_DOWNLOADER="wget -c -nv -N"
+        sudo -E install-qt 5.13.1 /
+    - name: Install Qt Creator
+      run: |
+        sudo mkdir -p /opt/qtcreator
+        wget -nv https://download.qt.io/official_releases/qtcreator/4.10/4.10.0/qt-creator-opensource-linux-x86_64-4.10.0.run
+        sudo extract-qt-installer qt-creator-opensource-linux-x86_64-4.10.0.run /opt/qtcreator
+        rm qt-creator-opensource-linux-x86_64-4.10.0.run
+    - name: Download Qt Creator source
+      run: |
+        wget -nv https://download.qt.io/official_releases/qtcreator/4.10/4.10.0/qt-creator-opensource-src-4.10.0.tar.xz
+        tar xf qt-creator-opensource-src-4.10.0.tar.xz
+        sudo mv qt-creator-opensource-src-4.10.0 /
+        rm qt-creator-opensource-src-4.10.0.tar.xz
+    - name: Configure
+      run: |
+        mkdir build
+        cd build
+        /opt/cmake/bin/cmake .. -GNinja -DCMAKE_CXX_COMPILER=clang++-8 -DCMAKE_BUILD_TYPE=Release -DQTCREATOR_SRC="/qt-creator-opensource-src-4.10.0" -DQTCREATOR_BIN="/opt/qtcreator/bin/qtcreator" -DCMAKE_PREFIX_PATH=/Qt/5.13.1/gcc_64
+    - name: Build
+      run: |
+        cd build
+        ninja
+    - name: Deploy
+      run: |
+        cd build
+        ninja install
+
+  build-windows:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cmake
+      run: |
+        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://github.com/Kitware/CMake/releases/download/v3.15.3/cmake-3.15.3-win64-x64.msi\", \"cmake.msi\")"
+        msiexec /quiet /a cmake.msi /qn TARGETDIR="%CD%\cmake-3.15.3"
+        del cmake.msi
+    - name: Install ninja
+      run: |
+        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip\", \"ninja-win.zip\")"
+        powershell.exe -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory(\"%CD%\ninja-win.zip\", \"%CD%\")"
+        del ninja-win.zip
+    - name: Install Qt
+      run: |
+        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://download.qt.io/archive/qt/5.13/5.13.1/qt-opensource-windows-x86-5.13.1.exe\", \"qt.exe\")"
+        powershell.exe -Command "Copy-Item \"buildutils/install-qt.qs.in\" -Destination \"install-qt.qs\""
+        powershell.exe -Command "(Get-Content install-qt.qs).replace('$PACKAGES', 'qt.qt5.5131.win64_msvc2017_64') | Set-Content install-qt.qs"
+        powershell.exe -Command "(Get-Content install-qt.qs).replace('$LIST_PACKAGES', 'false') | Set-Content install-qt.qs"
+        powershell.exe -Command "(Get-Content install-qt.qs).replace('$OUTPUT', [regex]::escape('%CD%\qt-5.13.1')) | Set-Content install-qt.qs"
+        qt.exe --script install-qt.qs
+        del qt.exe
+        del install-qt.qs
+    - name: Install Qt Creator
+      run: |
+        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://download.qt.io/official_releases/qtcreator/4.10/4.10.0/qt-creator-opensource-windows-x86_64-4.10.0.exe\", \"qtcreator.exe\")"
+        powershell.exe -Command "Copy-Item \"buildutils/install-qt.qs.in\" -Destination \"install-qtcreator.qs\""
+        powershell.exe -Command "(Get-Content install-qtcreator.qs).replace('$PACKAGES', '') | Set-Content install-qtcreator.qs"
+        powershell.exe -Command "(Get-Content install-qtcreator.qs).replace('$LIST_PACKAGES', 'false') | Set-Content install-qtcreator.qs"
+        powershell.exe -Command "(Get-Content install-qtcreator.qs).replace('$OUTPUT', [regex]::escape('%CD%\qtcreator-4.10.0')) | Set-Content install-qtcreator.qs"
+        qtcreator.exe --script install-qtcreator.qs
+        del qtcreator.exe
+        del install-qtcreator.qs
+    - name: Download Qt Creator source
+      run: |
+        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://download.qt.io/official_releases/qtcreator/4.10/4.10.0/qt-creator-opensource-src-4.10.0.zip\", \"qt-creator-opensource-src-4.10.0.zip\")"
+        powershell.exe -Command "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory(\"%CD%\qt-creator-opensource-src-4.10.0.zip\", \"%CD%\")"
+        del qt-creator-opensource-src-4.10.0.zip
+    - name: Configure
+      run: |
+        mkdir build
+        cd build
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        ..\cmake-3.15.3\CMake\bin\cmake.exe .. -GNinja -DCMAKE_CXX_COMPILER=cl.exe -DCMAKE_BUILD_TYPE=Release -DQTCREATOR_SRC="../qt-creator-opensource-src-4.10.0" -DQTCREATOR_BIN="../qtcreator-4.10.0/bin/qtcreator.exe" -DCMAKE_PREFIX_PATH="%CD%\\..\\qt-5.13.1\\5.13.1\\msvc2017_64"
+    - name: Build
+      run: |
+        cd build
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        ..\ninja.exe
+    - name: Deploy
+      run: |
+        cd build
+        ..\ninja.exe install

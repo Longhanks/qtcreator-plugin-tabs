@@ -2,6 +2,9 @@
 
 Tabs for [Qt Creator](http://qt-project.org/wiki/Category:Tools::QtCreator).
 
+
+[![Actions Status](https://github.com/Longhanks/qtcreator-plugin-tabs/workflows/Continuous%20Integration/badge.svg)](https://github.com/Longhanks/qtcreator-plugin-tabs/actions)
+
 ## Screenshot
 
 ![Screenshot](./docs/screenshot.png "Screenshot")

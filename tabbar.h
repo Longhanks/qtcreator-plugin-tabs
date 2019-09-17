@@ -2,6 +2,8 @@
 
 #include <QTabBar>
 
+#include <vector>
+
 namespace Core {
 
 class IEditor;
@@ -10,23 +12,11 @@ class IEditor;
 
 namespace Tabs::Internal {
 
-class TabBar : public QTabBar {
+class TabBar final : public QTabBar {
     Q_OBJECT
 
 public:
-    explicit TabBar(QWidget *parent = nullptr);
-
-private slots:
-    void activateEditor(int index);
-
-    void addEditorTab(Core::IEditor *editor);
-    void removeEditorTabs(QList<Core::IEditor *> editors);
-    void selectEditorTab(Core::IEditor *editor);
-
-    void closeTab(int index);
-
-    void prevTabAction();
-    void nextTabAction();
+    explicit TabBar(QWidget *parent) noexcept;
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -34,7 +24,12 @@ protected:
     QSize tabSizeHint(int index) const override;
 
 private:
-    QList<Core::IEditor *> m_editors;
+    std::vector<Core::IEditor *> m_editors;
+
+private slots:
+    void onEditorOpened(Core::IEditor *editor) noexcept;
+    void onEditorsClosed(QList<Core::IEditor *> editors) noexcept;
+    void onCurrentEditorChanged(Core::IEditor *editor) noexcept;
 };
 
 } // namespace Tabs::Internal
