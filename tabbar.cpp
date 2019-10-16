@@ -170,7 +170,10 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event) {
         Core::EditorManager::instance()->closeEditor(editor);
         this->removeTab(index);
     }
+
     QTabBar::mouseReleaseEvent(event);
+
+    this->reloadTabTexts();
 }
 
 QSize TabBar::tabSizeHint(int index) const {
@@ -182,6 +185,17 @@ QSize TabBar::tabSizeHint(int index) const {
         size.setHeight(Constants::TAB_MIN_HEIGHT);
     }
     return size;
+}
+
+void TabBar::reloadTabTexts() noexcept {
+    for (std::size_t i = 0; i < this->m_editors.size(); ++i) {
+        auto *editor = this->m_editors[i];
+        auto tabText = editor->document()->displayName();
+        if (editor->document()->isModified()) {
+            tabText += QLatin1Char('*');
+        }
+        this->setTabText(static_cast<int>(i), tabText);
+    }
 }
 
 void TabBar::onEditorOpened(Core::IEditor *editor) noexcept {
@@ -210,6 +224,8 @@ void TabBar::onEditorOpened(Core::IEditor *editor) noexcept {
                              std::begin(this->m_editors), editorIt)),
                          tabText);
     });
+
+    this->reloadTabTexts();
 }
 
 void TabBar::onEditorsClosed(QList<Core::IEditor *> editors) noexcept {
@@ -228,6 +244,8 @@ void TabBar::onEditorsClosed(QList<Core::IEditor *> editors) noexcept {
             std::distance(std::begin(this->m_editors), editorIt)));
         this->m_editors.erase(editorIt);
     }
+
+    this->reloadTabTexts();
 }
 
 void TabBar::onCurrentEditorChanged(Core::IEditor *editor) noexcept {

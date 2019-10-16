@@ -25,6 +25,7 @@ protected:
 
 private:
     std::vector<Core::IEditor *> m_editors;
+    void reloadTabTexts() noexcept;
 
 private slots:
     void onEditorOpened(Core::IEditor *editor) noexcept;
