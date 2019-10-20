@@ -50,7 +50,7 @@ project(tabs LANGUAGES CXX VERSION 0.6.0)
 
 configure_file("${CMAKE_SOURCE_DIR}/tabs.json.in" "${CMAKE_CURRENT_BINARY_DIR}/tabs.json")
 
-add_library(${PROJECT_NAME} SHARED plugin.cpp tabbar.cpp)
+add_library(${PROJECT_NAME} SHARED mainwindowfilter.cpp plugin.cpp tabbar.cpp)
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" AND NOT MSVC)
     list(APPEND COMPILER_WARNINGS
