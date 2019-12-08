@@ -68,36 +68,43 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install cmake
+      shell: cmd
       run: |
-        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-cmake.bat\", \"windows-install-cmake.bat\")"
+        curl -L https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-cmake.bat -o windows-install-cmake.bat
         call windows-install-cmake.bat
         del windows-install-cmake.bat
     - name: Install ninja
+      shell: cmd
       run: |
-        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-ninja.bat\", \"windows-install-ninja.bat\")"
+        curl -L https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-ninja.bat -o windows-install-ninja.bat
         call windows-install-ninja.bat
         del windows-install-ninja.bat
     - name: Install Qt
+      shell: cmd
       run: |
-        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-qt.bat\", \"windows-install-qt.bat\")"
+        curl -L https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-qt.bat -o windows-install-qt.bat
         call windows-install-qt.bat
         del windows-install-qt.bat
     - name: Install Qt Creator
+      shell: cmd
       run: |
-        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-qtcreator.bat\", \"windows-install-qtcreator.bat\")"
+        curl -L https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-install-qtcreator.bat -o windows-install-qtcreator.bat
         call windows-install-qtcreator.bat
         del windows-install-qtcreator.bat
     - name: Download Qt Creator source
+      shell: cmd
       run: |
-        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-download-qtcreator-src.bat\", \"windows-download-qtcreator-src.bat\")"
+        curl -L https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-download-qtcreator-src.bat -o windows-download-qtcreator-src.bat
         call windows-download-qtcreator-src.bat
         del windows-download-qtcreator-src.bat
     - name: Configure
+      shell: cmd
       run: |
-        powershell.exe -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-generate-qtcreator-plugin-buildsystem.bat\", \"windows-generate-qtcreator-plugin-buildsystem.bat\")"
+        curl -L https://raw.githubusercontent.com/Longhanks/github-actions-ci-scripts/master/windows-generate-qtcreator-plugin-buildsystem.bat -o windows-generate-qtcreator-plugin-buildsystem.bat
         call windows-generate-qtcreator-plugin-buildsystem.bat
         del windows-generate-qtcreator-plugin-buildsystem.bat
     - name: Build
+      shell: cmd
       run: |
         cd build
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -107,6 +114,7 @@ jobs:
         cd build
         ..\ninja.exe install
     - name: Prepare artifact
+      shell: cmd
       run: |
         cd build
         mkdir artifact

@@ -26,7 +26,7 @@ Provide the following variables to cmake:
 | Variable            | Value                                             |
 | ------------------- | ------------------------------------------------- |
 | `QTCREATOR_SRC`     | Path to directory containing Qt Creator source    |
-| `QTCREATOR_VERSION` | Target version of Qt Creator (defaults to 4.10.1) |
+| `QTCREATOR_VERSION` | Target version of Qt Creator (defaults to 4.10.2) |
 
 On macOS and Linux, the following variable is needed to find Qt Creator's plugin libraries:
 
@@ -40,7 +40,7 @@ On macOS and Linux, the following variable is needed to find Qt Creator's plugin
 
 ```
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DQTCREATOR_SRC="~/Downloads/qt-creator-opensource-src-4.10.1" -DQTCREATOR_BIN="/Applications/Qt Creator.app/Contents/MacOS/Qt Creator"
+cmake .. -DCMAKE_BUILD_TYPE=Release -DQTCREATOR_SRC="~/Downloads/qt-creator-opensource-src-4.10.2" -DQTCREATOR_BIN="/Applications/Qt Creator.app/Contents/MacOS/Qt Creator"
 make
 sudo make install
 ```
@@ -51,7 +51,7 @@ This example uses the Ninja build system.
 
 ```
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=C:/Qt/5.13.1/msvc2017_64 -DQTCREATOR_SRC=C:/Users/aschulz/Projects/qt-creator-opensource-src-4.10.1 -GNinja
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=C:/Qt/5.13.2/msvc2017_64 -DQTCREATOR_SRC=C:/Users/aschulz/Projects/qt-creator-opensource-src-4.10.2 -GNinja
 ninja
 ninja install
 ```
