@@ -9,7 +9,9 @@
 #include <projectexplorer/session.h>
 
 #include <QAction>
+#include <QContextMenuEvent>
 #include <QMenu>
+#include <QMouseEvent>
 #include <QScopeGuard>
 #include <QShortcut>
 #include <QSizePolicy>
