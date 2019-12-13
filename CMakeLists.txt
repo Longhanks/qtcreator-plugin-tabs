@@ -22,7 +22,7 @@ set(QTCREATOR_SRC "" CACHE PATH "Path to Qt Creator sources")
 if (NOT WIN32)
     set(QTCREATOR_BIN "" CACHE FILEPATH "Path to Qt Creator binary")
 endif ()
-set(QTCREATOR_VERSION "4.10.2" CACHE STRING "Target version of Qt Creator")
+set(QTCREATOR_VERSION "4.11.0" CACHE STRING "Target version of Qt Creator")
 
 if (NOT EXISTS "${QTCREATOR_SRC}/src/qtcreatorplugin.pri")
     message(FATAL_ERROR "QTCREATOR_SRC must point to Qt Creator sources.")
