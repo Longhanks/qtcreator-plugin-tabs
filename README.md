@@ -36,6 +36,17 @@ On macOS and Linux, the following variable is needed to find Qt Creator's plugin
 
 ### Examples
 
+#### Linux (Fedora)
+
+The main difference here is that on Linux - since most distributions ship quite recente versions of QtCreator - we override the `QTCREATOR_VERSION` value.
+
+```sh
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DQTCREATOR_SRC="~/Downloads/qt-creator-opensource-src-5.0.1" -DQTCREATOR_BIN="/usr/bin/qtcreator -DQTCREATOR_VERSION="5.0.1"
+make
+sudo make install
+```
+
 #### macOS
 
 ```

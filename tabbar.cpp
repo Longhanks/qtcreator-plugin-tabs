@@ -86,11 +86,12 @@ TabBar::TabBar(QWidget *parent) noexcept : QTabBar(parent) {
                 return;
             }
 
-            auto *editor = this->m_editors[to_unsigned(index)];
+            QList<Core::IEditor *> editors;
+            editors.append(this->m_editors[to_unsigned(index)]);
             auto it = std::begin(this->m_editors);
             std::advance(it, index);
             this->m_editors.erase(it);
-            Core::EditorManager::instance()->closeEditor(editor);
+            Core::EditorManager::instance()->closeEditors(editors, true);
             this->removeTab(index);
         });
 
@@ -165,11 +166,12 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event) {
             return;
         }
 
-        auto *editor = this->m_editors[to_unsigned(index)];
+        QList<Core::IEditor *> editors;
+        editors.append(this->m_editors[to_unsigned(index)]);
         auto it = std::begin(this->m_editors);
         std::advance(it, index);
         this->m_editors.erase(it);
-        Core::EditorManager::instance()->closeEditor(editor);
+        Core::EditorManager::instance()->closeEditors(editors);
         this->removeTab(index);
     }
 
@@ -206,7 +208,7 @@ void TabBar::onEditorOpened(Core::IEditor *editor) noexcept {
     const int index = this->addTab(document->displayName());
     this->setTabIcon(
         index,
-        Core::FileIconProvider::icon(document->filePath().toFileInfo()));
+        Core::FileIconProvider::icon(document->filePath()));
     this->setTabToolTip(index, document->filePath().toString());
 
     this->m_editors.push_back(editor);
